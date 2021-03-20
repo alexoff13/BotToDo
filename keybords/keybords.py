@@ -2,7 +2,7 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 button_today = KeyboardButton('Сегодня')
 button_tomorrow = KeyboardButton('Завтра')
-button_next_week = KeyboardButton('Через неделю')
+button_next_week = KeyboardButton('ЧерезНеделю')
 
 date_kb = ReplyKeyboardMarkup(resize_keyboard=True).add(button_today,
                                                         button_tomorrow,

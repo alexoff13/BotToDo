@@ -16,8 +16,9 @@ def parse_date(message: str):
     if message == 'Завтра':
         d += timedelta(days=1)
         return f'{d.day} {d.month} {d.year % 100}'
-    if message == 'Через неделю':
+    if message == 'ЧерезНеделю':
         d += timedelta(days=7)
+        print(d)
         return f'{d.day} {d.month} {d.year % 100}'
     if message in weekdays.keys():
         d += timedelta(days=abs(d.weekday() - weekdays[message]))

@@ -8,6 +8,7 @@ import keybords
 from loader import dp
 from models.parse_date import parse_date
 from states import AddTask
+from utils import db
 
 
 # TODO возможность редактировать данные в процессе добавления
@@ -57,11 +58,13 @@ async def add_description(message: types.Message, state: FSMContext):
     await state.update_data(description=answer)
     data = await state.get_data()
     name = data.get('name')
-    date = data.get('date').split()
+    date = data.get('date')
+    date_split = date.split()
     description = data.get('description')
     # TODO выгрузить задачу в бд
+    db.add_task(message.from_user.id, name, date, description)
     await message.answer('Вы успешно добавили задачу!\n'
                          f'Название : {name}\n'
-                         f'Выполнить до : {date[0]}/{date[1]}/{date[2]}\n'
+                         f'Выполнить до : {date_split[0]}/{date_split[1]}/{date_split[2]}\n'
                          f'Описание : {description}')
     await state.reset_state()
