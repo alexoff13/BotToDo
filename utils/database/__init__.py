@@ -1,3 +1,9 @@
-from .DatabaseTask import DatabaseTasks
+from sqlite3 import OperationalError
+
+from .database_task import DatabaseTasks
+
 db = DatabaseTasks()
-# db.create_db()
+try:
+    db.create_db()
+except OperationalError:
+    pass

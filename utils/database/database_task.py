@@ -50,12 +50,16 @@ class DatabaseTasks:
         self.execute(sql, parameters=parameters, commit=True)
 
     def remove_task(self, id_: int):
-        sql = f"DELETE FROM Tasks WHERE ID = {id_}"
+        sql = f"DELETE FROM Tasks WHERE id = {id_}"
         self.execute(sql, commit=True)
 
-    def get_date_tasks(self, date: str, id_user):
+    def get_date_tasks(self, date: str, id_user, is_today=False):
         sql = f"SELECT * FROM Tasks WHERE date_ = \"{date}\" AND id_user = {id_user}"
         return self.execute(sql, commit=False, fetchall=True)
+
+    def get_description(self, id_):
+        sql = f"SELECT * FROM Descriptions WHERE id = {id_}"
+        return self.execute(sql, commit=False, fetchone=True)
 
     @staticmethod
     def __logger(statement):

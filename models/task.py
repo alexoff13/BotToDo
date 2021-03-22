@@ -13,4 +13,5 @@ class Task:
         self.id = id
 
     def __str__(self):
-        return f'{self.name} до {self.date}'
+        date = self.date.split()
+        return f'{self.name} до {date[0]}/{date[1]}/{date[2]}'

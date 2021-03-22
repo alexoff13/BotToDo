@@ -15,7 +15,7 @@ from utils import db
 
 
 @dp.message_handler(commands='add')
-async def enter_test(message: types.Message):
+async def add_task(message: types.Message):
     await message.answer('Введите название задачи:\n')
 
     await AddTask.AddName.set()
@@ -43,7 +43,8 @@ async def add_date(message: types.Message, state: FSMContext):
                 await message.answer("Дата меньше текущей")
                 raise ValueError('Дата меньше текущей')
     except ValueError:
-        await message.answer("Попробуйте ещё раз.\nВведите дату выполнения задачи в формате dd mm yy")
+        await message.answer("Попробуйте ещё раз.\nВведите дату"
+                             " выполнения задачи в формате dd mm yy")
         return
 
     await state.update_data(date=answer)
@@ -59,12 +60,10 @@ async def add_description(message: types.Message, state: FSMContext):
     data = await state.get_data()
     name = data.get('name')
     date = data.get('date')
-    date_split = date.split()
     description = data.get('description')
-    # TODO выгрузить задачу в бд
     db.add_task(message.from_user.id, name, date, description)
     await message.answer('Вы успешно добавили задачу!\n'
                          f'Название : {name}\n'
-                         f'Выполнить до : {date_split[0]}/{date_split[1]}/{date_split[2]}\n'
+                         f'Выполнить до : {date.replace(" ", "/")}\n'
                          f'Описание : {description}')
     await state.reset_state()
