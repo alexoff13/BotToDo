@@ -20,18 +20,16 @@ async def get_input_date(message: types.Message):
 @dp.message_handler(state=GetTask.GetTasks)
 async def get_tasks(message: types.Message, state: FSMContext):
     text = message.text.lower()
-    if text == 'сегодня':
-        delta = timedelta(days=0)
-    elif text == 'завтра':
-        delta = timedelta(days=1)
+    if text == 'сегодня' or text == 'завтра':
+        delta = timedelta(days=0) if text == 'сегодня' else timedelta(days=1)
+        d = datetime.today().date() + delta
+        tasks = db.get_date_tasks(d.strftime('%d %m %y'),
+                                  message.from_user.id)
     elif text == 'все':
-        delta = timedelta(days=0)  # TODO FIX
+        tasks = db.get_all_task(message.from_user.id)
     else:
         await message.answer('Попробуйте ещё раз')
         return
-
-    d = datetime.today().date() + delta
-    tasks = db.get_date_tasks(d.strftime('%d %m %y'), message.from_user.id)
 
     try:
         await message.answer(f'Задачи на {text}:\n')
