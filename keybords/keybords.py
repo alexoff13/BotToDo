@@ -84,3 +84,14 @@ edit_task = InlineKeyboardMarkup(row_width=2,
                                          )
                                      ]
                                  ])
+
+cancel = InlineKeyboardMarkup(row_width=2,
+                              inline_keyboard=[
+                                  [
+                                      InlineKeyboardButton(
+                                          text='Отмена',
+                                          callback_data='cancel'
+                                      )
+                                  ]
+
+                              ])

@@ -47,14 +47,18 @@ async def get_tasks(call: CallbackQuery, state: FSMContext):
     await state.update_data(date_get_task=call.data)
     await GetTask.ViewTask.set()
     await call.message.answer(f'Чтобы посмотреть описание конкретной задачи '
-                              f'введите её номер: 1 - {len(tasks)}, иначе введите 0')
+                              f'введите её номер: 1 - {len(tasks)}',
+                              reply_markup=keybords.cancel)
+
+
+@dp.callback_query_handler(state=GetTask.ViewTask)
+async def exit_the_view(call: CallbackQuery, state: FSMContext):
+    await call.answer(cache_time=60)
+    await state.reset_state()
 
 
 @dp.message_handler(state=GetTask.ViewTask)
 async def view_task(message: types.Message, state: FSMContext):
-    if message.text == '0':
-        await state.reset_state()
-        return
     data = await state.get_data()
     try:
         task = Task(*(data.get('tasks')[int(message.text.strip()) - 1]))
