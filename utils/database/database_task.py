@@ -57,7 +57,7 @@ class DatabaseTasks:
         sql = f"SELECT * FROM Tasks WHERE date_ = \"{date}\" AND id_user = {id_user}"
         return self.execute(sql, commit=False, fetchall=True)
 
-    def get_all_task(self, id_user,):
+    def get_all_task(self, id_user, ):
         # TODO add  сортировку по дате
         sql = f"SELECT * FROM Tasks WHERE id_user = {id_user}"
         return self.execute(sql, commit=False, fetchall=True)
@@ -65,6 +65,18 @@ class DatabaseTasks:
     def get_description(self, id_):
         sql = f"SELECT * FROM Descriptions WHERE id = {id_}"
         return self.execute(sql, commit=False, fetchone=True)
+
+    def update_task_name(self, id_: int, name: str):
+        sql = f"UPDATE Tasks SET name = \"{name}\" WHERE id = {id_}"
+        self.execute(sql, commit=True)
+
+    def update_task_date(self, id_: int, date: str):
+        sql = f"UPDATE Tasks SET date_ = \"{date}\" WHERE id = {id_}"
+        self.execute(sql, commit=True)
+
+    def update_task_description(self, id_: int, description: str):
+        sql = f"UPDATE Descriptions SET text_description = \"{description}\" WHERE id = {id_}"
+        self.execute(sql, commit=True)
 
     @staticmethod
     def __logger(statement):

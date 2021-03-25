@@ -12,12 +12,12 @@ def parse_date(message: str):
                 'Сб': 5,
                 'Вс': 6,
                 }
-    if message == 'Сегодня':
+    if message == 'today':
         return d.strftime('%d %m %y')
-    if message == 'Завтра':
+    if message == 'tomorrow':
         d += timedelta(days=1)
         return d.strftime('%d %m %y')
-    if message == 'ЧерезНеделю':
+    if message == 'week':
         d += timedelta(days=7)
         return d.strftime('%d %m %y')
     # if message in weekdays.keys():
