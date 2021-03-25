@@ -24,8 +24,6 @@ async def get_input_date(message: types.Message):
 async def get_tasks(call: CallbackQuery, state: FSMContext):
     await call.answer(cache_time=60)
     text = call.data.lower()
-    print(text)
-    print(call)
     if text == 'сегодня' or text == 'завтра':
         delta = timedelta(days=0) if text == 'сегодня' else timedelta(days=1)
         d = datetime.today().date() + delta
@@ -136,7 +134,8 @@ async def edit_task_name(message: types.Message, state: FSMContext):
 async def edit_task_name(message: types.Message, state: FSMContext):
     data = await state.get_data()
     id_task = data.get('id_done_task')
-    task = Task(*(data.get('tasks')[id_task]))
+    tasks = data.get('tasks')
+    task = Task(*[i for i in tasks if i[-1] == id_task][0])
     db.update_task_description(task.description_id, message.text)
     await state.reset_state()
 
