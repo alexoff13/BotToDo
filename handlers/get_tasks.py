@@ -25,13 +25,14 @@ async def get_tasks(call: CallbackQuery, state: FSMContext):
     await call.answer(cache_time=60)
     text = call.data.lower()
     print(text)
+    print(call)
     if text == 'сегодня' or text == 'завтра':
         delta = timedelta(days=0) if text == 'сегодня' else timedelta(days=1)
         d = datetime.today().date() + delta
         tasks = db.get_date_tasks(d.strftime('%d %m %y'),
-                                  call.message.from_user.id)
+                                  call.from_user.id)
     elif text == 'все':
-        tasks = db.get_all_task(call.message.from_user.id)
+        tasks = db.get_all_task(call.from_user.id)
     else:
         await call.message.answer('Попробуйте ещё раз')
         return

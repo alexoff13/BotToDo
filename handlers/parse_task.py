@@ -60,7 +60,7 @@ async def skip_description(call: CallbackQuery, callback_data: dict, state: FSMC
     data = await state.get_data()
     name = data.get('name')
     date = data.get('date')
-    db.add_task(call.message.from_user.id, name, date, ' ')
+    db.add_task(call.from_user.id, name, date, ' ')
     await call.message.answer('Вы успешно добавили задачу!\n'
                               f'Название : {name}\n'
                               f'Выполнить до : {date.replace(" ", "/")}\n')
