@@ -62,7 +62,7 @@ class DatabaseTasks:
     def get_all_task(self, id_user):
         # TODO add  сортировку по дате
         sql = f"SELECT * FROM Tasks WHERE id_user = {id_user}"
-        return [Task(*i) for i in self.execute(sql, commit=False, fetchall=True)]
+        return sorted([Task(*i) for i in self.execute(sql, commit=False, fetchall=True)], key=lambda i: i.date)
 
     def get_description(self, id_):
         sql = f"SELECT * FROM Descriptions WHERE id = {id_}"
