@@ -1,5 +1,7 @@
 import sqlite3
 
+from models import Task
+
 
 class DatabaseTasks:
     def __init__(self, path_to_db='files/tasks.db'):
@@ -55,12 +57,12 @@ class DatabaseTasks:
 
     def get_date_tasks(self, date: str, id_user, is_today=False):
         sql = f"SELECT * FROM Tasks WHERE date_ = \"{date}\" AND id_user = {id_user}"
-        return self.execute(sql, commit=False, fetchall=True)
+        return [Task(*i) for i in self.execute(sql, commit=False, fetchall=True)]
 
-    def get_all_task(self, id_user, ):
+    def get_all_task(self, id_user):
         # TODO add  сортировку по дате
         sql = f"SELECT * FROM Tasks WHERE id_user = {id_user}"
-        return self.execute(sql, commit=False, fetchall=True)
+        return [Task(*i) for i in self.execute(sql, commit=False, fetchall=True)]
 
     def get_description(self, id_):
         sql = f"SELECT * FROM Descriptions WHERE id = {id_}"

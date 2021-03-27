@@ -37,12 +37,12 @@ async def get_tasks(call: CallbackQuery, state: FSMContext):
 
     try:
         await call.message.answer(f'Задачи на {text}:\n')
-        await call.message.answer('\n'.join((f'{i + 1}. {Task(*task)}' for i, task in enumerate(tasks))))
+        await call.message.answer('\n'.join((f'{i + 1}. {task}' for i, task in enumerate(tasks))))
     except MessageTextIsEmpty:
         await call.message.answer('Поздравляю! На сегодня задач нет')
         await state.reset_state()
         return
-    await state.update_data(tasks=tasks)
+    await state.update_data(tasks=[i.return_data() for i in tasks])
     await state.update_data(date_get_task=call.data)
     await GetTask.ViewTask.set()
     await call.message.answer(f'Чтобы посмотреть описание конкретной задачи '
@@ -93,7 +93,7 @@ async def return_back(call: CallbackQuery, callback_data: dict, state: FSMContex
 
 @dp.callback_query_handler(keybords.edit_task_callback.filter(action='edit'),
                            state=GetTask.DoneTask)
-async def edit_task(call: CallbackQuery, callback_data: dict, state: FSMContext):
+async def edit_task(call: CallbackQuery):
     await call.answer(cache_time=60)
     await call.message.answer('Какое поле вы хотите редактировать?', reply_markup=keybords.edit_task)
 
@@ -135,7 +135,7 @@ async def edit_task_name(message: types.Message, state: FSMContext):
     data = await state.get_data()
     id_task = data.get('id_done_task')
     tasks = data.get('tasks')
-    task = Task(*[i for i in tasks if i[-1] == id_task][0])
+    task = Task(*[i for i in tasks if i[-1] == id_task][0])  # получаем задачу, которую мы изменяем
     db.update_task_description(task.description_id, message.text)
     await state.reset_state()
 
@@ -160,9 +160,3 @@ async def edit_task_name(message: types.Message, state: FSMContext):
 
     db.update_task_date(id_task, answer)
     await state.reset_state()
-
-#
-#
-#
-# @dp.message_handler(state=GetTask.EditDate)
-# @dp.message_handler(state=GetTask.EditDescription)

@@ -26,31 +26,37 @@ async def add_name(message: types.Message, state: FSMContext):
     answer = message.text
     await state.update_data(name=answer)
     await message.answer("Введите дату выполнения задачи в формате dd mm yy",
-                         reply_markup=keybords.date2_kb)
+                         reply_markup=keybords.add_date_in_task)
     await AddTask.AddDate.set()
 
 
-@dp.callback_query_handler(keybords.add_date_callback.filter(), state=AddTask.AddDate)
-async def add_date(call: CallbackQuery, callback_data: dict, state: FSMContext):
-    await call.answer(cache_time=60)
-    answer = callback_data.get('date')
+@dp.message_handler(state=AddTask.AddDate)
+async def add_date_from_text(message: types.Message, state: FSMContext):
+    answer = message.text
     try:
         if answer.isalpha():
             answer = parse_date(answer)
         else:
             date = datetime.strptime(answer.strip(), "%d %m %y")
             if date.date() < datetime.today().date():
-                await call.message.answer("Дата меньше текущей")
+                await message.answer("Дата меньше текущей")
                 raise ValueError('Дата меньше текущей')
     except ValueError:
-        await call.message.answer("Попробуйте ещё раз.\nВведите дату"
-                                  " выполнения задачи в формате dd mm yy")
+        await message.answer("Попробуйте ещё раз.\nВведите дату"
+                             " выполнения задачи в формате dd mm yy")
         return
 
     await state.update_data(date=answer)
-    await call.message.answer("Добавьте текстовое описание задачи: ",
-                              reply_markup=keybords.description)
+    await message.answer("Добавьте текстовое описание задачи: ",
+                         reply_markup=keybords.description)
     await AddTask.AddDescription.set()
+
+
+@dp.callback_query_handler(keybords.add_date_callback.filter(), state=AddTask.AddDate)
+async def add_date(call: CallbackQuery, callback_data: dict, state: FSMContext):
+    await call.answer(cache_time=60)
+    call.message.text = callback_data.get('date')
+    await add_date_from_text(call.message, state)
 
 
 @dp.callback_query_handler(keybords.inline_data_callback.add_description_callback.filter(description='false'),

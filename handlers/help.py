@@ -1,6 +1,5 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.builtin import CommandHelp
 
 from loader import dp
 
@@ -11,7 +10,7 @@ async def bot_cancel(message: types.Message, state: FSMContext):
     await message.answer('Состояния сброшены')
 
 
-@dp.message_handler(CommandHelp())
+@dp.message_handler(commands=['start', 'help'])
 async def bot_help(message: types.Message):
     text = ("Список команд: ",
             "/start - Начать диалог",

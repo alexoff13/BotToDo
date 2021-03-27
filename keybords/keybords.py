@@ -3,23 +3,23 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from keybords.inline_data_callback import add_date_callback, add_description_callback
 from keybords.inline_data_callback.callback_data import edit_task_callback
 
-date2_kb = InlineKeyboardMarkup(row_width=2,
-                                inline_keyboard=[
-                                    [
-                                        InlineKeyboardButton(
-                                            text='Сегодня',
-                                            callback_data=add_date_callback.new(date='today')
-                                        ),
-                                        InlineKeyboardButton(
-                                            text='Завтра',
-                                            callback_data=add_date_callback.new(date='tomorrow')
-                                        ),
-                                        InlineKeyboardButton(
-                                            text='Через неделю',
-                                            callback_data=add_date_callback.new(date='week')
-                                        )
-                                    ]
-                                ])
+add_date_in_task = InlineKeyboardMarkup(row_width=2,
+                                        inline_keyboard=[
+                                            [
+                                                InlineKeyboardButton(
+                                                    text='Сегодня',
+                                                    callback_data=add_date_callback.new(date='today')
+                                                ),
+                                                InlineKeyboardButton(
+                                                    text='Завтра',
+                                                    callback_data=add_date_callback.new(date='tomorrow')
+                                                ),
+                                                InlineKeyboardButton(
+                                                    text='Через неделю',
+                                                    callback_data=add_date_callback.new(date='week')
+                                                )
+                                            ]
+                                        ])
 
 get_tasks = InlineKeyboardMarkup(row_width=2,
                                  inline_keyboard=[

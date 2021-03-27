@@ -1,4 +1,4 @@
-from utils import db
+from datetime import datetime
 
 
 class Description:
@@ -9,15 +9,15 @@ class Description:
 
 class Task:
     def __init__(self, id: int, id_user: int, name: str, date: str, description_id: int):
-        self.description_id = description_id
-        self.date = date
-        self.name = name
-        self.id_user = id_user
-        self.id = id
-
-    def __str__(self):
-        date = self.date.split()
-        return f'{self.name} до {date[0]}/{date[1]}/{date[2]}'
+        self.description_id: int = description_id
+        self.date: datetime = datetime.strptime(date, '%d %m %y')
+        self.name: str = name
+        self.id_user: int = id_user
+        self.id: int = id
 
     def return_data(self):
-        return self.id_user, self.name, self.date, db.get_description(self.description_id)
+        return self.id, self.id_user, self.name, self.date.strftime('%d %m %y'), self.description_id
+
+    def __str__(self):
+        days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', ]
+        return f'{self.name} до {days[self.date.weekday()]} ({self.date.strftime("%d/%m/%y")})'
