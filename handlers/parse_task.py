@@ -86,13 +86,14 @@ async def add_description(message: types.Message, state: FSMContext):
                          f'Название : {name}\n'
                          f'Выполнить до : {date.replace(" ", "/")}\n'
                          f'Описание : {description}')
+    await AddTask.AddNotification.set()
     await message.answer("Если хотите добавить уведомление напишите время в формате HH:MM: ",
                          reply_markup=keybords.cancel)
-    await AddTask.AddNotification.set()
 
 
-@dp.callback_query_handler(state=AddTask.AddNotification.set())  # вызовется если пользователь не будет добавлять
-async def exit_the_view(call: CallbackQuery, state: FSMContext):  # уведомление
+@dp.callback_query_handler(keybords.keybords.edit_task_callback.filter(action='cancel'),
+                           state=AddTask)
+async def stop_add_tasks(call: CallbackQuery, state: FSMContext):
     await call.answer(cache_time=60)
     await state.reset_state()
 

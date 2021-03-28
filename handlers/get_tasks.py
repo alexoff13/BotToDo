@@ -152,7 +152,7 @@ async def stop_get_tasks(call: CallbackQuery, state: FSMContext):
     await state.reset_state()
 
 
-@dp.callback_query_handler(keybords.edit_task_callback.filter(action='back'), state=GetTask.DoneTask)
+@dp.callback_query_handler(keybords.edit_task_callback.filter(action='back'), state=GetTask)
 async def return_back(call: CallbackQuery, callback_data: dict, state: FSMContext):
     await call.answer(cache_time=60)
     await GetTask.GetTasks.set()
