@@ -50,12 +50,6 @@ async def get_tasks(call: CallbackQuery, state: FSMContext):
                               reply_markup=keybords.cancel)
 
 
-@dp.callback_query_handler(state=GetTask.ViewTask)
-async def exit_the_view(call: CallbackQuery, state: FSMContext):
-    await call.answer(cache_time=60)
-    await state.reset_state()
-
-
 @dp.message_handler(state=GetTask.ViewTask)
 async def view_task(message: types.Message, state: FSMContext):
     data = await state.get_data()
@@ -77,18 +71,7 @@ async def done_task(call: CallbackQuery, callback_data: dict, state: FSMContext)
     data = await state.get_data()
     id_done_task = data.get('id_done_task')
     db.remove_task(id_done_task)
-    await call.message.answer('Задача успешно выполнена')
-    await state.reset_state()
-
-
-@dp.callback_query_handler(keybords.edit_task_callback.filter(action='back'),
-                           state=GetTask.DoneTask)
-async def return_back(call: CallbackQuery, callback_data: dict, state: FSMContext):
-    await call.answer(cache_time=60)
-    await GetTask.GetTasks.set()
-    data = await state.get_data()
-    call.data = data.get('date_get_task')
-    await get_tasks(call, state)
+    await call.message.answer('Задача успешно выполнена', reply_markup=keybords.action_back)
 
 
 @dp.callback_query_handler(keybords.edit_task_callback.filter(action='edit'),
@@ -127,7 +110,7 @@ async def edit_task_name(message: types.Message, state: FSMContext):
     data = await state.get_data()
     id_task = data.get('id_done_task')
     db.update_task_name(id_task, message.text)
-    await state.reset_state()
+    await message.answer('Имя успешно изменено', reply_markup=keybords.action_back)
 
 
 @dp.message_handler(state=GetTask.EditDescription)
@@ -137,7 +120,7 @@ async def edit_task_name(message: types.Message, state: FSMContext):
     tasks = data.get('tasks')
     task = Task(*[i for i in tasks if i[-1] == id_task][0])  # получаем задачу, которую мы изменяем
     db.update_task_description(task.description_id, message.text)
-    await state.reset_state()
+    await message.answer('Описание успешно изменено', reply_markup=keybords.action_back)
 
 
 @dp.message_handler(state=GetTask.EditDate)
@@ -159,4 +142,20 @@ async def edit_task_name(message: types.Message, state: FSMContext):
         return
 
     db.update_task_date(id_task, answer)
+    await message.answer('Дата успешно изменена', reply_markup=keybords.action_back)
+
+
+@dp.callback_query_handler(keybords.edit_task_callback.filter(action='cancel'),
+                           state=GetTask)
+async def stop_get_tasks(call: CallbackQuery, state: FSMContext):
+    await call.answer(cache_time=60)
     await state.reset_state()
+
+
+@dp.callback_query_handler(keybords.edit_task_callback.filter(action='back'), state=GetTask.DoneTask)
+async def return_back(call: CallbackQuery, callback_data: dict, state: FSMContext):
+    await call.answer(cache_time=60)
+    await GetTask.GetTasks.set()
+    data = await state.get_data()
+    call.data = data.get('date_get_task')
+    await get_tasks(call, state)

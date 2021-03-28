@@ -33,7 +33,7 @@ class DatabaseTasks:
 
     def create_db(self):
         with open('files/creation.txt', 'r') as infile:
-            scripts = map(lambda x: x + ';', infile.read().replace('\n', '').split(';')[:-1])
+            scripts = map(lambda x: x + ';', infile.read().replace('\n', '').split(';'))
         for script in scripts:
             self.execute(script, commit=True)
 
@@ -60,7 +60,6 @@ class DatabaseTasks:
         return [Task(*i) for i in self.execute(sql, commit=False, fetchall=True)]
 
     def get_all_task(self, id_user):
-        # TODO add  сортировку по дате
         sql = f"SELECT * FROM Tasks WHERE id_user = {id_user}"
         return sorted([Task(*i) for i in self.execute(sql, commit=False, fetchall=True)], key=lambda i: i.date)
 

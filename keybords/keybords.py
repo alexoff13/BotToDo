@@ -67,6 +67,20 @@ action_tasks = InlineKeyboardMarkup(row_width=2,
                                         ]
                                     ])
 
+action_back = InlineKeyboardMarkup(row_width=2,
+                                   inline_keyboard=[
+                                       [
+                                           InlineKeyboardButton(
+                                               text='Назад',
+                                               callback_data=edit_task_callback.new(action='back')
+                                           ),
+                                           InlineKeyboardButton(
+                                               text='Выйти',
+                                               callback_data=edit_task_callback.new(action='cancel')
+                                           )
+                                       ]
+                                   ])
+
 edit_task = InlineKeyboardMarkup(row_width=2,
                                  inline_keyboard=[
                                      [
@@ -90,7 +104,7 @@ cancel = InlineKeyboardMarkup(row_width=2,
                                   [
                                       InlineKeyboardButton(
                                           text='Отмена',
-                                          callback_data='cancel'
+                                          callback_data=edit_task_callback.new(action='cancel')
                                       )
                                   ]
 
