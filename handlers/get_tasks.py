@@ -27,8 +27,9 @@ async def get_tasks(call: CallbackQuery, state: FSMContext):
     if text == 'сегодня' or text == 'завтра':
         delta = timedelta(days=0) if text == 'сегодня' else timedelta(days=1)
         d = datetime.today().date() + delta
-        tasks = db.get_date_tasks(d.strftime('%d %m %y'),
-                                  call.from_user.id)
+        tasks = db.get_overdue_tasks(call.from_user.id)
+        tasks += db.get_date_tasks(d.strftime('%y %m %d'),
+                                   call.from_user.id)
     elif text == 'все':
         tasks = db.get_all_task(call.from_user.id)
     else:
@@ -39,7 +40,7 @@ async def get_tasks(call: CallbackQuery, state: FSMContext):
         await call.message.answer(f'Задачи на {text}:\n')
         await call.message.answer('\n'.join((f'{i + 1}. {task}' for i, task in enumerate(tasks))))
     except MessageTextIsEmpty:
-        await call.message.answer('Поздравляю! На сегодня задач нет')
+        await call.message.answer('Поздравляю! Задач нет')
         await state.reset_state()
         return
     await state.update_data(tasks=[i.return_data() for i in tasks])
@@ -131,6 +132,7 @@ async def edit_task_name(message: types.Message, state: FSMContext):
     try:
         if answer.isalpha():
             answer = parse_date(answer)
+            date = datetime.strptime(answer.strip(), "%d %m %y")
         else:
             date = datetime.strptime(answer.strip(), "%d %m %y")
             if date.date() < datetime.today().date():
@@ -141,7 +143,7 @@ async def edit_task_name(message: types.Message, state: FSMContext):
                              " выполнения задачи в формате dd mm yy")
         return
 
-    db.update_task_date(id_task, answer)
+    db.update_task_date(id_task, date.strftime("%y %m %d"))
     await message.answer('Дата успешно изменена', reply_markup=keybords.action_back)
 
 

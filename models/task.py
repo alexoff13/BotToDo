@@ -10,7 +10,7 @@ class Description:
 class Task:
     def __init__(self, id: int, id_user: int, name: str, date: str, description_id: int):
         self.description_id: int = description_id
-        self.date: datetime = datetime.strptime(date, '%d %m %y')
+        self.date: datetime = datetime.strptime(date, '%y %m %d')
         self.name: str = name
         self.id_user: int = id_user
         self.id: int = id
@@ -20,4 +20,4 @@ class Task:
 
     def __str__(self):
         days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', ]
-        return f'{self.name} до {days[self.date.weekday()]} ({self.date.strftime("%d/%m/%y")})'
+        return f'{self.name} {days[self.date.weekday()]} ({self.date.strftime("%d/%m/%y")})'

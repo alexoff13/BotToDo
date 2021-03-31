@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 
 from models import Task
 
@@ -55,8 +56,13 @@ class DatabaseTasks:
         sql = f"DELETE FROM Tasks WHERE id = {id_}"
         self.execute(sql, commit=True)
 
-    def get_date_tasks(self, date: str, id_user, is_today=False):
+    def get_date_tasks(self, date: str, id_user):
         sql = f"SELECT * FROM Tasks WHERE date_ = \"{date}\" AND id_user = {id_user}"
+        return [Task(*i) for i in self.execute(sql, commit=False, fetchall=True)]
+
+    def get_overdue_tasks(self, id_user):
+        date = datetime.today().date().strftime("%y %m %d")
+        sql = f"SELECT * FROM Tasks WHERE date_ < \"{date}\" AND id_user = {id_user}"
         return [Task(*i) for i in self.execute(sql, commit=False, fetchall=True)]
 
     def get_all_task(self, id_user):

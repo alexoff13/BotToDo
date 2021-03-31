@@ -33,6 +33,7 @@ async def add_date_from_text(message: types.Message, state: FSMContext):
     try:
         if answer.isalpha():
             answer = parse_date(answer)
+            date = datetime.strptime(answer.strip(), "%d %m %y")
         else:
             date = datetime.strptime(answer.strip(), "%d %m %y")
             if date.date() < datetime.today().date():
@@ -43,7 +44,7 @@ async def add_date_from_text(message: types.Message, state: FSMContext):
                              " выполнения задачи в формате dd mm yy")
         return
 
-    await state.update_data(date=answer)
+    await state.update_data(date=date.strftime("%y %m %d"))
     await message.answer("Добавьте текстовое описание задачи: ",
                          reply_markup=keybords.description)
     await AddTask.AddDescription.set()
@@ -101,14 +102,20 @@ async def stop_add_tasks(call: CallbackQuery, state: FSMContext):
 @dp.message_handler(state=AddTask.AddNotification)  # добавляем уведомление
 async def add_notification(message: types.Message, state: FSMContext):
     time_ = message.text
+    try:
+        datetime.strptime(time_, "%H:%M")
+    except ValueError:
+        await message.answer('Время должно быть в формате HH:MM: ',
+                             reply_markup=keybords.cancel)
+        return
     data = await state.get_data()
-    date_ = data.get('date')
-    date_at = "{} {}.{}.20{}".format(time_, *date_.split())
+    date_ = data.get('date').split()
+    date_at = f"{time_} {date_[2]}.{date_[1]}.20{date_[0]}"
     name = data.get('name')
     description = data.get('description')
     text = 'Напоминаю!\n' \
            f'Название : {name}\n' \
-           f'Выполнить до : {date_.replace(" ", "/")}\n' \
+           f'Выполнить до : {" ".join(date_).replace(" ", "/")}\n' \
            f'Описание : {description}'
 
     set_new_at_job(message.from_user.id, date_at, text)
