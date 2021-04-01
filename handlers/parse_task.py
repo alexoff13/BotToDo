@@ -109,8 +109,8 @@ async def add_notification(message: types.Message, state: FSMContext):
                              reply_markup=keybords.cancel)
         return
     data = await state.get_data()
-    date_ = data.get('date').split()
-    date_at = f"{time_} {date_[2]}.{date_[1]}.20{date_[0]}"
+    date_ = data.get('date').split()[::-1]
+    date_at = f"{time_} {date_[0]}.{date_[1]}.20{date_[2]}"
     name = data.get('name')
     description = data.get('description')
     text = 'Напоминаю!\n' \
