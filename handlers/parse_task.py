@@ -67,7 +67,7 @@ async def skip_description(call: CallbackQuery, callback_data: dict, state: FSMC
     db.add_task(call.from_user.id, name, date, ' ')
     await call.message.answer('Вы успешно добавили задачу!\n'
                               f'Название : {name}\n'
-                              f'Выполнить до : {date.replace(" ", "/")}\n')
+                              f'Выполнить до : {" ".join(date.split()[::-1]).replace(" ", "/")}\n')
     await call.message.answer("Если хотите добавить уведомление напишите время в формате HH:MM: ",
                               reply_markup=keybords.cancel)
     await AddTask.AddNotification.set()
@@ -85,7 +85,7 @@ async def add_description(message: types.Message, state: FSMContext):
     db.add_task(message.from_user.id, name, date, description)
     await message.answer('Вы успешно добавили задачу!\n'
                          f'Название : {name}\n'
-                         f'Выполнить до : {date.replace(" ", "/")}\n'
+                         f'Выполнить до : {" ".join(date.split()[::-1]).replace(" ", "/")}\n'
                          f'Описание : {description}')
     await AddTask.AddNotification.set()
     await message.answer("Если хотите добавить уведомление напишите время в формате HH:MM: ",
