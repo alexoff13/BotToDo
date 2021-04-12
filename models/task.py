@@ -16,7 +16,7 @@ class Task:
         self.id: int = id
 
     def return_data(self):
-        return self.id, self.id_user, self.name, self.date.strftime('%d %m %y'), self.description_id
+        return self.id, self.id_user, self.name, self.date.strftime('%y %m %d'), self.description_id
 
     def __str__(self):
         days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', ]
